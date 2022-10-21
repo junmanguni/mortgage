@@ -1,12 +1,24 @@
 package com.example.mortgagechecker.controller;
 
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.example.mortgagechecker.model.MortgageCheckResult;
 import com.example.mortgagechecker.service.MortgageService;
+import com.example.mortgagechecker.service.ValidationService;
 
 @WebMvcTest(controllers = MortgageController.class)
 class MortgageControllerTest {
@@ -15,34 +27,24 @@ class MortgageControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private MortgageService service;
+    private MortgageService mortgageService;
+    
+    @MockBean
+    private ValidationService validationService;
 
-    /*@Test
-    void checkMortgageBookShouldReturnBookJson() throws Exception {
-    	Book book = new Book();
-		book.setName("a");
-		book.setVal("b");
-		book.setId(1L);
-		when(service.create(any(Book.class))).thenReturn(book);
+    @Test
+    void testCheckMortgage() throws Exception {
+    	MortgageCheckResult result = new MortgageCheckResult(true, "1,500.00");
+    	when(mortgageService.checkMortgage(anyDouble(), anyInt(), anyDouble(), anyDouble())).thenReturn(result);
 
-		String requestBody = "{\"name\": \"a\", \"val\": \"b\"}";
-        this.mockMvc.perform(post("/books").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+        this.mockMvc.perform(post("/api/mortgage-check").contentType(MediaType.APPLICATION_JSON)
+        		.param("annualIncome", "65000")
+        		.param("maturityPeriod", "30")
+        		.param("loanValue", "250000")
+        		.param("homeValue", "250000"))
         	.andDo(print()).andExpect(status().isOk())
-        	.andExpect(jsonPath("$.name").value("a"))
-        	.andExpect(jsonPath("$.val").value("b"));
+        	.andExpect(jsonPath("$.monthlyCost").value("1,500.00"))
+        	.andExpect(jsonPath("$.feasible").value(true));
     }
     
-    @Test
-    void putBookShouldReturnBookJson() throws Exception {
-    	Book book = new Book();
-		book.setName("c");
-		book.setVal("d");
-		when(service.update(any(Book.class), any(Long.class))).thenReturn(book);
-
-		String requestBody = "{\"name\": \"c\", \"val\": \"d\"}";
-        this.mockMvc.perform(put("/books/1").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-        	.andDo(print()).andExpect(status().isOk())
-        	.andExpect(jsonPath("$.name").value("c"))
-        	.andExpect(jsonPath("$.val").value("d"));
-    }*/
 }

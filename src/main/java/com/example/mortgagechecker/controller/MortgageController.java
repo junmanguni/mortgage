@@ -14,7 +14,7 @@ import com.example.mortgagechecker.exception.InvalidParameterException;
 import com.example.mortgagechecker.model.MortgageCheckResult;
 import com.example.mortgagechecker.model.MortgageRate;
 import com.example.mortgagechecker.service.MortgageService;
-import com.example.mortgagechecker.service.ValidationServiceImpl;
+import com.example.mortgagechecker.service.ValidationService;
 
 @RestController
 public class MortgageController {
@@ -23,7 +23,7 @@ public class MortgageController {
 	public MortgageService mortgageService;
 	
 	@Autowired
-	public ValidationServiceImpl validationService;
+	public ValidationService validationService;
 
 	@GetMapping("/api/interest-rates")
 	public List<MortgageRate> getAllRates() {
