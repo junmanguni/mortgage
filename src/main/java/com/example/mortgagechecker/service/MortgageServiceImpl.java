@@ -13,10 +13,6 @@ import com.example.mortgagechecker.service.util.MortgageCheckUtil;
 public class MortgageServiceImpl implements MortgageService {
 	
 	private final MortgageRateRepository mortgageRateRepository;
-
-	public MortgageServiceImpl(MortgageRateRepository mortgageRateRepository) {
-		this.mortgageRateRepository = mortgageRateRepository;
-	}
 	
 	@Override
 	public List<MortgageRate> getAllRates() {
@@ -38,6 +34,10 @@ public class MortgageServiceImpl implements MortgageService {
 		return mortgageCheckResult;
 		
 		
+	}
+	
+	public MortgageServiceImpl(MortgageRateRepository mortgageRateRepository) {
+		this.mortgageRateRepository = mortgageRateRepository;
 	}
 
 }
